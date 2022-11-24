@@ -4,7 +4,6 @@ import { AiFillDelete, AiFillLike } from "react-icons/ai";
 import { BsFillReplyFill } from "react-icons/bs";
 import { database } from "../firebase/Firebase";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { isEmpty } from "@firebase/util";
 
 function Comment({
   data,
@@ -32,8 +31,8 @@ function Comment({
   };
 
   const dataDel = async (index) => {
-      await remove(ref(database, `/${index}`));
-      getData();
+    await remove(ref(database, `/${index}`));
+    getData();
   };
 
   const dataLike = (index) => {
@@ -64,8 +63,12 @@ function Comment({
               },
             ]
       );
+    }else{
+      
     }
     getData();
+    setComment("")
+    setUsername("")
   };
 
   return (
@@ -73,23 +76,28 @@ function Comment({
       {data?.map((item, i) => {
         const index = data.indexOf(item);
         return (
-          <div key={i} className="card bg-dark w-50 mt-3 text-light">
+          <div key={i} className="card bg-dark w-50 mt-3 text-light mx-4">
             <div className="card-header ">
               <h3>{item?.name}</h3>
             </div>
             <div className="card-body card-text bg-secondary">
               <p>{item?.comments}</p>
             </div>
-            <div className="bg-info">
-              <span>
-                <AiFillLike
+            <div className=" d-flex p-2">
+              <span className="d-flex gap-1 me-4">
+                <button
+                  type="button"
+                  class="btn btn-primary"
                   onClick={(e) => {
                     dataLike(index);
                   }}
-                />
-                {item.like}
+                >
+                  <AiFillLike />
+                </button>
+                <p className="fw-bold bg-primary p-2">{item.like}</p>
               </span>
-              <AiFillDelete
+              <button
+                class="btn btn-danger"
                 onClick={() => {
                   if (
                     window.confirm(
@@ -99,16 +107,21 @@ function Comment({
                     dataDel(index);
                   }
                 }}
-              />
-              <BsFillReplyFill
+              >
+                <AiFillDelete />
+              </button>
+              <button
+                class="btn btn-warning"
                 onClick={(e) => {
                   addReply(index);
                 }}
-              />
+              >
+                <BsFillReplyFill />
+              </button>
             </div>
             <div>
               {data[i]?.replies?.map((reply) => (
-                <div key={reply} className="mx-5 card bg-light text-dark">
+                <div key={reply} className="mx-5 card bg-warning text-dark">
                   <h3 className="card-title">{reply?.name}</h3>
                   <p className="card-text">{reply?.comments}</p>
                 </div>
